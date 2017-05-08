@@ -37,8 +37,8 @@ class Team:
 
 class ParseCommands(cmd.Cmd):
     """komunikacia s uzivatelom: caka na prikazy a vykonava ich"""
-    intro = 'napis help'
-    prompt = ''
+    intro = 'napis help pre pomoc'
+    prompt = 'cakam prikaz: '
 
     def do_stav(self, args):
         """vypise stav turnaja v tvare nazov timu, pocet zapasov a body"""
