@@ -3,18 +3,6 @@ import datetime
 import random
 
 
-def play(zapas):
-    """vyberie vitaza zapasu nahodne s pravdepodobnostou priamo umernou jeho skillu
-    a oznaci ze tieto dva timy uz proti sebe hrali"""
-    ratio = zapas[0].skill / (zapas[1].skill + 0.0000001)
-    vitaz = random.choices([0, 1], [ratio, 1], k=1)[0]
-    zapas[vitaz].points += 1
-    for i in range(2):
-        zapas[i].played.add(zapas[(i + 1) % 2])
-        zapas[i].matches += 1
-    print('\nzapas medzi', zapas[0].name, 'a', zapas[1].name, 'vyhral', zapas[vitaz].name)
-
-
 class State:
     """trieda reprezentujuca stav turnaja"""
 
@@ -35,13 +23,25 @@ class Team:
         self.skill = float(skill)
 
 
+def play(zapas):
+    """vyberie vitaza zapasu nahodne s pravdepodobnostou priamo umernou jeho skillu
+    a oznaci ze tieto dva timy uz proti sebe hrali"""
+    vitaz = random.choices([0, 1], [zapas[0].skill, zapas[1].skill], k=1)[0]
+    zapas[vitaz].points += 1
+    for i in range(2):
+        zapas[i].played.add(zapas[(i + 1) % 2])
+        zapas[i].matches += 1
+    print('\nzapas medzi', zapas[0].name, 'a', zapas[1].name, 'vyhral', zapas[vitaz].name)
+
+
 class ParseCommands(cmd.Cmd):
     """komunikacia s uzivatelom: caka na prikazy a vykonava ich"""
     intro = 'napis help pre pomoc'
     prompt = 'cakam prikaz: '
 
     def do_stav(self, args):
-        """vypise stav turnaja v tvare nazov timu, pocet zapasov a body"""
+        """vypise datum a timy v tvare nazov timu, pocet zapasov a body zoradene zostupne podla poctu bodov a poctu 
+        zapasov """
         print(state.date)
         length = max(len('nazov timu '), max(len(team.name) for team in state.teams))
         length2 = len('pocet zapasov ')
@@ -50,8 +50,7 @@ class ParseCommands(cmd.Cmd):
             print(team.name.ljust(length), str(team.matches).ljust(length2), team.points)
 
     def do_next(self, args):
-        """odsimuluje jeden den turnaja: vyberie na zapas nahodne dva timy
-        ktore proti sebe nehrali"""
+        """odsimuluje jeden den turnaja: vyberie na zapas nahodne dva timy ktore proti sebe nehrali"""
         while True:
             zapas = random.sample(state.teams, 2)
             if zapas[0] not in zapas[1].played: break
@@ -72,7 +71,7 @@ class ParseCommands(cmd.Cmd):
 n = int(input('Napis pocet timov: '))
 teams = set()
 for i in range(n):
-    nazov, skill = input('nazov timu medzera jeho skill: ').split()
+    nazov, skill = input('nazov timu medzera jeho (nezaporny) skill: ').split()
     teams.add(Team(nazov, skill))
 
 state = State(teams)
