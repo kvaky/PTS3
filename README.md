@@ -5,7 +5,7 @@ Program skončí, keď odohral zápas každý s každým.
 ## Zoznam príkazov:
 
 `stav`
-  vypíše dátum a stav turnaja v tvare názov tímu, počet zápasov a body
+  vypíše dátum a tímy (názov tímu, počet zápasov a body) zoradené zostupne podľa bodov a počtu zápasov.
 
 `next`
   odsimuluje jeden zápas a spustí `stav` 
@@ -15,3 +15,9 @@ Program skončí, keď odohral zápas každý s každým.
 
 `help`
   zobrazí nápovedu
+
+## Dizajn
+
+Program komunikuje s užívateľom pomocou knižnice `cmd`. Globálna premenná triedy `State` si pamätá dátum (`date`), tímy (`teams`) a počet odohraných zápasov (`games`). Každý tím je reprezentovaný objektom triedy `Team`, ktorý v sebe má názov tímu (`name`), počet bodov (`points`), počet zápasov (`matches`), tímy, s ktorými už hral (`played`) a svoj skill (`skill`).
+
+Do zápasu sa vyberajú náhodne dva tímy, ktoré proti sebe ešte nehrali. Nech x a y sú skilly tímov A a B v uvedenom poradí. Pomer pravdepodobností výhier A a B je potom x/y.
